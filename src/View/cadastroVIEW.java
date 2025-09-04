@@ -1,7 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+package View;
+
+import Connection.Conexao;
+import java.sql.Connection;        
+import java.sql.PreparedStatement; 
+import java.sql.SQLException; 
+import java.sql.DriverManager;
+import beans.ProdutosDAO;
+import beans.ProdutosDTO;
+
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -27,14 +35,15 @@ public class cadastroVIEW extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        cadastroNome = new javax.swing.JTextField();
-        cadastroValor = new javax.swing.JTextField();
+        lNome = new javax.swing.JLabel();
+        lValor = new javax.swing.JLabel();
+        txtNome = new javax.swing.JTextField();
+        txtValor = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         btnCadastrar = new javax.swing.JButton();
         btnProdutos = new javax.swing.JButton();
+        bntSalvar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -43,15 +52,15 @@ public class cadastroVIEW extends javax.swing.JFrame {
 
         jLabel3.setText("Cadastre um novo produto");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel4.setText("Nome:");
+        lNome.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lNome.setText("Nome:");
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setText("Valor:");
+        lValor.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lValor.setText("Valor:");
 
-        cadastroNome.addActionListener(new java.awt.event.ActionListener() {
+        txtNome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cadastroNomeActionPerformed(evt);
+                txtNomeActionPerformed(evt);
             }
         });
 
@@ -70,6 +79,13 @@ public class cadastroVIEW extends javax.swing.JFrame {
             }
         });
 
+        bntSalvar.setText("Salvar");
+        bntSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntSalvarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -85,7 +101,10 @@ public class cadastroVIEW extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(bntSalvar)
+                        .addGap(125, 125, 125)
+                        .addComponent(btnProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
@@ -94,12 +113,12 @@ public class cadastroVIEW extends javax.swing.JFrame {
                         .addGroup(layout.createSequentialGroup()
                             .addGap(72, 72, 72)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel5))
+                                .addComponent(lNome)
+                                .addComponent(lValor))
                             .addGap(31, 31, 31)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(cadastroNome)
-                                .addComponent(cadastroValor, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)))
+                                .addComponent(txtNome)
+                                .addComponent(txtValor, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)))
                         .addGroup(layout.createSequentialGroup()
                             .addGap(37, 37, 37)
                             .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -116,41 +135,68 @@ public class cadastroVIEW extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(cadastroNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lNome)
+                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(cadastroValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lValor)
+                    .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addComponent(btnCadastrar)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
-                .addComponent(btnProdutos)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnProdutos)
+                    .addComponent(bntSalvar))
                 .addGap(22, 22, 22))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cadastroNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastroNomeActionPerformed
+    private void txtNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeActionPerformed
         
         
-    }//GEN-LAST:event_cadastroNomeActionPerformed
+    }//GEN-LAST:event_txtNomeActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        ProdutosDTO produto = new ProdutosDTO();
-        String nome = cadastroNome.getText();
-        String valor = cadastroValor.getText();
-        String status = "A Venda";
-        produto.setNome(nome);
-        produto.setValor(Integer.parseInt(valor));
-        produto.setStatus(status);
-        
-        ProdutosDAO produtodao = new ProdutosDAO();
-        produtodao.cadastrarProduto(produto);
-        
+         try {
+            String nome = txtNome.getText().trim();
+            String valorStr = txtValor.getText().trim();
+
+            if (nome.isEmpty() || valorStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos!");
+                return;
+            }
+
+            // Normaliza valor
+            String sanitized = valorStr.replaceAll("\\s+", "");
+            if (sanitized.contains(",")) {
+                sanitized = sanitized.replaceAll("\\.", "").replace(",", ".");
+            } else {
+                sanitized = sanitized.replaceAll(",", "");
+            }
+
+            double preco = Double.parseDouble(sanitized);
+
+            ProdutosDTO produto = new ProdutosDTO();
+            produto.setNome(nome);
+            produto.setValor(preco);
+            produto.setStatu("A Venda");
+
+            ProdutosDAO dao = new ProdutosDAO();
+            dao.cadastrarProduto(produto);
+
+            txtNome.setText("");
+            txtValor.setText("");
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Valor inválido. Use formato: 1000.00 ou 1.000,00");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao cadastrar: " + e.getMessage());
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosActionPerformed
@@ -158,6 +204,94 @@ public class cadastroVIEW extends javax.swing.JFrame {
         listagem.setVisible(true);
     }//GEN-LAST:event_btnProdutosActionPerformed
 
+    private void bntSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntSalvarActionPerformed
+       try {
+        String nome = txtNome.getText().trim();
+        String valorStr = txtValor.getText().trim();
+
+        if (nome.isEmpty() || valorStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Preencha todos os campos!");
+            return;
+        }
+
+        // Normaliza valor para double
+        String sanitized = valorStr.replaceAll("\\s+", "");
+        if (sanitized.contains(",")) {
+            sanitized = sanitized.replaceAll("\\.", "").replace(",", ".");
+        } else {
+            sanitized = sanitized.replaceAll(",", "");
+        }
+
+        double valor = Double.parseDouble(sanitized);
+
+        // Cria objeto produto
+        ProdutosDTO produto = new ProdutosDTO();
+        produto.setNome(nome);
+        produto.setValor(valor);
+        produto.setStatu("A Venda");
+
+        // Salva no banco de dados
+        ProdutosDAO dao = new ProdutosDAO();
+        dao.cadastrarProduto(produto);
+
+        // Mensagem de sucesso
+        JOptionPane.showMessageDialog(this, "Produto salvo com sucesso!");
+
+        // Limpa os campos
+        txtNome.setText("");
+        txtValor.setText("");
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Valor inválido. Use formato: 1000.00 ou 1.000,00");
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage());
+        e.printStackTrace();
+    }
+       
+    }//GEN-LAST:event_bntSalvarActionPerformed
+private void salvarItem() throws ClassNotFoundException {
+    String nome = txtNome.getText();          // campo de nome
+    
+    double valor;
+
+    try {
+        valor = Double.parseDouble(txtValor.getText()); // campo de valor
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Valor inválido!");
+        return;
+    }
+
+    try {
+        try ( Connection conn = Conexao.getConnection) {
+            String sql = "INSERT INTO itens (nome, valor, statu) VALUES (?, ?, ?)";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, nome);
+            pst.setDouble(2, valor);
+            pst.setString(3, "A Venda");
+            
+            int res = pst.executeUpdate();
+            
+            if (res > 0) {
+                JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!");
+                // Limpa os campos
+                txtNome.setText("");
+                
+                txtValor.setText("");
+                
+                
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao cadastrar item!");
+            }
+            
+            pst.close();
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
+    }
+}
+    
     /**
      * @param args the command line arguments
      */
@@ -194,15 +328,16 @@ public class cadastroVIEW extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bntSalvar;
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnProdutos;
-    private javax.swing.JTextField cadastroNome;
-    private javax.swing.JTextField cadastroValor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JLabel lNome;
+    private javax.swing.JLabel lValor;
+    private javax.swing.JTextField txtNome;
+    private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
 }
