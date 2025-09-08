@@ -151,14 +151,38 @@ public class listagemVIEW extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVenderActionPerformed
 
     private void btnVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendasActionPerformed
-        //vendasVIEW vendas = new vendasVIEW(); 
-        //vendas.setVisible(true);
+        ListaVendidos tela = new ListaVendidos(); 
+    tela.setVisible(true); 
+    this.dispose(); // fecha a tela atual se quiser
     }//GEN-LAST:event_btnVendasActionPerformed
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
-        this.dispose();
+        cadastroVIEW tela = new cadastroVIEW();
+        tela.setVisible(true);
+    this.dispose(); // Fecha a listagemVIEW
     }//GEN-LAST:event_btnVoltarActionPerformed
+       
+     private void listarProdutos(){
+          try {
+            ProdutosDAO produtosdao = new ProdutosDAO();
+            DefaultTableModel model = (DefaultTableModel) listaProdutos.getModel();
+            model.setNumRows(0);
 
+            ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutos();
+
+            for(ProdutosDTO p : listagem){
+                model.addRow(new Object[]{
+                    p.getId(),
+                    p.getNome(),
+                    p.getValor(),   // corrigido: usar getValor()
+                    p.getStatu()
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar produtos: " + e.getMessage());
+            e.printStackTrace();
+        }
+     }
     /**
      * @param args the command line arguments
      */
@@ -207,25 +231,6 @@ public class listagemVIEW extends javax.swing.JFrame {
     private javax.swing.JTable listaProdutos;
     // End of variables declaration//GEN-END:variables
 
-    private void listarProdutos(){
-          try {
-            ProdutosDAO produtosdao = new ProdutosDAO();
-            DefaultTableModel model = (DefaultTableModel) listaProdutos.getModel();
-            model.setNumRows(0);
-
-            ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutos();
-
-            for(ProdutosDTO p : listagem){
-                model.addRow(new Object[]{
-                    p.getId(),
-                    p.getNome(),
-                    p.getValor(),   // corrigido: usar getValor()
-                    p.getStatu()
-                });
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar produtos: " + e.getMessage());
-            e.printStackTrace();
-        }
+   
     }
-}
+

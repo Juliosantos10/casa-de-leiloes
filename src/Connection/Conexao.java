@@ -24,22 +24,23 @@ public class Conexao {
     private static final String PASSWORD = "";  // Altere conforme sua senha, "" se não tem senha
     public static Connection getConnection;
     
-    /** Objeto de conexão com o banco de dados */
-    Connection conn = null;
-    /** Objeto para executar comandos SQL com parâmetros */
-    PreparedStatement ps = null;
-    /** Objeto para armazenar os resultados de uma consulta SQL */
-    ResultSet rs = null;
+    
 
     /**
      * Estabelece e retorna uma conexão com o banco de dados MySQL.
      */
     // Método para obter a conexão
     public static Connection getConnection() throws ClassNotFoundException, SQLException {
-        // Registra o driver JDBC do MySQL
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        // Retorna a conexão
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        try {
+            // Ajuste importante: adicionar ?useSSL=false&allowPublicKeyRetrieval=true
+            return DriverManager.getConnection(
+                URL + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
+                USER,
+                PASSWORD
+            );
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao conectar ao banco de dados: " + e.getMessage());
+        }
     }
              
         }
