@@ -1,8 +1,12 @@
 package beans;
 
+import Connection.Conexao;
 import beans.ProdutosDTO;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import java.sql.ResultSet;
+import java.sql.Connection;
 
 public class ProdutosDAO {
 
@@ -31,17 +35,32 @@ public class ProdutosDAO {
 
     // Método para vender (alterar status do produto pelo ID)
     public void venderProduto(int id) {
+         boolean encontrado = false;
         for (ProdutosDTO p : listagem) {
             if (p.getId() == id) {
-                p.setStatu("Vendido"); // muda o status
+                p.setStatu("Vendido"); // muda o status na lista em memória
+                encontrado = true;
+
+                // Atualiza também no banco de dados
+                String sql = "UPDATE produtos SET statu = 'Vendido' WHERE id = ?";
+                try (Connection conn = Conexao.getConnection();
+                     PreparedStatement pst = conn.prepareStatement(sql)) {
+                    pst.setInt(1, id);
+                    pst.executeUpdate();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Erro ao atualizar banco: " + e.getMessage());
+                }
+
                 JOptionPane.showMessageDialog(null, "Produto ID " + id + " vendido com sucesso!");
-                return;
+                break;
             }
         }
-        JOptionPane.showMessageDialog(null, "Produto ID " + id + " não encontrado!");
+        if (!encontrado) {
+            JOptionPane.showMessageDialog(null, "Produto ID " + id + " não encontrado!");
+        }
     }
-
-    // Inicializa alguns produtos de exemplo
+    
+     // Inicializa alguns produtos de exemplo
     public static void inicializarProdutos() {
         if (listagem.isEmpty()) {
             listagem.add(new ProdutosDTO(1, "Notebook", 3500.00, "Disponível"));
@@ -49,4 +68,18 @@ public class ProdutosDAO {
             listagem.add(new ProdutosDTO(3, "Fone Bluetooth", 250.00, "Disponível"));
         }
     }
+
+    // Lista apenas produtos vendidos
+    public ArrayList<ProdutosDTO> listarVendidos() {
+        ArrayList<ProdutosDTO> lista = new ArrayList<>();
+
+        // Usando a lista em memória
+        for (ProdutosDTO p : listagem) {
+            if ("Vendido".equals(p.getStatu())) {
+                lista.add(p);
+            }
+        }
+        return lista;
+    }
 }
+    
